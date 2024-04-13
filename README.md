@@ -3,8 +3,35 @@
 * [Dialog](#Dialog)
 * [ActionBar](#ActionBar)
 * [Fragment](#Fragment)
+* [Exam](#시험 대비)
 
 # Chronometer
+
+## onKeyDown
+```kotlin
+    var prevTime = 0L
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        when(keyCode) {
+            KeyEvent.KEYCODE_BACK -> {
+                if (SystemClock.elapsedRealtime() - prevTime > 3000) {
+                    Toast.makeText(this, "종료하려면 한번 더 누르세요", Toast.LENGTH_LONG).show()
+                    prevTime = SystemClock.elapsedRealtime() // 현재 시간을 넣음 
+                    return true
+                }
+            }
+
+             KeyEvent.KEYCODE_VOLUME_DOWN -> {
+                 AlertDialog.Builder(this).run {
+                     setTitle("볼륨업 버튼 눌림")
+                     setPositiveButton("확인", null)
+                     show()
+                }
+            }
+        }
+        return super.onKeyDown(keyCode, event)
+    }
+```
+* keyCode : 눌린 키
 
 
 # Dialog
@@ -339,6 +366,8 @@ override fun onOptionsItemSelected(item: MenuItem): Boolean {
   return super.onOptionsItemSelected(item)
 }
 ```
+* toggle = ActionBarDrawerToggle(`this`, `binding.drawer`, R.string.drawaer_opened, R.string.drawer_closed)
+  
 
 # Fragment
 * build.graddle에서 `implementation("androidx.viewpager2:viewpager2:1.0.0")` 추가 
@@ -411,3 +440,40 @@ class MainActivity : AppCompatActivity() {
   }
 }
 ```
+
+
+# 시험 대비
+
+### 메뉴 선택 시 입력 처리
+```kotlin
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // item.itemId와 내부에 저장되어 있는 id값과 비교한 후 내용 수행 
+        // 로그인 메뉴를 누르면 Toast가 뜨게 하는 경우 
+        if(item.itemId == R.id.login) {
+            Toast.makeText(this@MainActivity, "개발 중 입니다", Toast.LENGTH_LONG).show()
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+```
+
+### 텍스트 검색 내용 다이얼로그 출력
+```kotlin
+// searchView의 setOnQueryTextListener에 작성 
+searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+    override fun onQueryTextSubmit(query: String?): Boolean {
+            AlertDialog.Builder(this@MainActivity).run() { // this@MainActivity 로 설정해주기
+            setTitle("검색어 입력 화면")
+            setMessage("검색어" + query + "를 입력하였습니다.") // 색 바꾸기 해야 함 
+            setPositiveButton("확인", null)
+            show()
+        }
+        return true
+    }
+     // 생략
+    })
+    return super.onCreateOptionsMenu(menu)
+}
+```
+
+
