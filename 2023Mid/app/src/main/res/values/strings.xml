@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Mid20220961</string>
+    <string name="menu_opened">menu_opened</string>
+    <string name="menu_closed">menu_closed</string>
 </resources>
