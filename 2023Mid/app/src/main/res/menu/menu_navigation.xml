@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <!--showAsAction = true : 항상 화면에 보임 -->
+    <!-- SearchView를 지정해줌으로서 화면에 띄울 수 있음 -->
+    <item
+        android:id="@+id/menu_search"
+        android:title="search"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="always"
+        />
+
+    <item
+        android:id="@+id/login"
+        android:title="로그인"
+        app:showAsAction="always"
+        />
 
 </menu>

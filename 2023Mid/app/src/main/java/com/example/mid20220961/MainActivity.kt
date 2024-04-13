@@ -4,7 +4,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -47,6 +50,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_navigation, menu)
+        val searchView = menu?.findItem(R.id.menu_search)?.actionView as SearchView // androidx.appcompat.widget.SearchView 임포트하기
+
+        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                AlertDialog.Builder(this@MainActivity).run() {
+                    setTitle("검색어 입력 확인")
+                    setMessage("검색어 " + query +"을/를 입력했습니다.")
+                    setPositiveButton("닫기", null)
+                    show()
+                }
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return true
+            }
+
+        })
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -54,6 +76,12 @@ class MainActivity : AppCompatActivity() {
         // toggle을 클릭했을 경우
         if(toggle.onOptionsItemSelected(item))
             return true
+
+        when(item.itemId) {
+            R.id.login -> {
+                Toast.makeText(applicationContext, "개발 중 입니다.", Toast.LENGTH_LONG).show()
+            }
+        }
 
         return super.onOptionsItemSelected(item)
     }
