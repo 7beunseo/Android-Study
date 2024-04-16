@@ -1,10 +1,14 @@
 package com.example.myapplication6
 
+import android.app.ProgressDialog.show
+import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.example.myapplication6.databinding.FragmentOneBinding
 
 // TODO: Rename parameter arguments, choose names that match
@@ -39,6 +43,25 @@ class OneFragment : Fragment() {
         /**
          * view에서 필요한 동작을 넣어줌
          */
+        binding.fragButton.setOnClickListener {
+            // fragment의 배경색을 바꿈
+            binding.oneFragment.setBackgroundColor(Color.parseColor("#ffddff"))
+
+            Toast.makeText(context, "OneFragment", Toast.LENGTH_LONG).show() // this -> context로 변경
+
+            // androidx.appcompat.app. 경로에 있는 AlertDialog 임포트 시 context 도 에러 -> null 일 경우 처리 필요 -> let으로 묶음
+            context?.let { it1 ->
+                AlertDialog.Builder(it1).run() {
+                    setTitle("알림")
+                    setIcon(android.R.drawable.ic_dialog_alert)
+                    setMessage("fragment에서 dialog 테스트 입니다.")
+                    setPositiveButton("예", null)
+                    setNegativeButton("아니오", null)
+                    show()
+                }
+            }
+        }
+
         return binding.root // binding 리턴
     }
 
