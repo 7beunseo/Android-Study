@@ -73,18 +73,16 @@
     </LinearLayout>
 
     <!-- 드로어 화면 -->
-    <TextView
+    <com.google.android.material.navigation.NavigationView
         android:layout_width="300dp"
         android:layout_height="match_parent"
-        android:text="I am drawer"
-        android:background="#ff0000"
-        android:textColor="#ffffff"
-        android:textSize="20dp"
-        android:textStyle="bold"
         android:gravity="center"
 
         android:fitsSystemWindows="true"
         android:layout_gravity="start"
+        android:id="@+id/mainDrawerView"
+        app:headerLayout="@layout/navigation_header"
+        app:menu="@menu/menu_navigation"
         />
 
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -3,6 +3,9 @@
 * [Dialog](#Dialog)
 * [ActionBar](#ActionBar)
 * [Fragment](#Fragment)
+* [RecyclerView](#RecyclerView)
+* [TabLayout](#TabLayout)
+* [NavigationView](#NavigationView)
 * [Exam](#시험 대비)
 
 # Chronometer
@@ -461,7 +464,9 @@ class MainActivity : AppCompatActivity() {
   * ex ) `mutableListOf<String>` : 데이터가 변경되므로 mutable 
 ```kotlin
 // adapter & view holder
-binding.recyclerView.adapter = MyAdapter(datas)
+// binding.recyclerView.adapter = MyAdapter(datas)
+val adapter = MyAdapter(datas)
+binding.recyclerView.adapter = adapter 
 ```
 * xml의 recyclerView에 어뎁터를 연결
 * MyAdapter라는 클래스를 새롭게 생성하고 인자로 어떤 내용이 반복되어 보일 것인지 지정해줌
@@ -567,6 +572,190 @@ class MyItemDecoration(val context: Context): RecyclerView.ItemDecoration() {
 }
 ```
 
+## FloatingButton 설정하기
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TwoFragment">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/recyclerView"
+        android:background="#00ff00" >
+    </androidx.recyclerview.widget.RecyclerView>
+  
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/main_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+        app:icon="@android:drawable/ic_input_add"
+        android:text="Add Item"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>
+```
+* 전체 RelativeLayout으로 설정해주기 
+* `ExtendedFloatingActionButton` 사용 
+* id 부여하는 거 잊지 말기 
+
+### 버튼 누르면 recyclerView 항목 추가
+```kotlin
+binding.mainFab.setOnClickListener{
+            datas.add("Add Item") // 데이터를 변경하기 위해서는 RecyclerView가 참조하고 있는 데이터를 변경해야 함
+            adapter.notifyDataSetChanged()
+}
+```
+
+## TabLayout
+
+* activity_main.xml 파일에 TabLayout 추가
+* LinearLayout으로 감싸주기
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".MainActivity">
+
+  <androidx.viewpager2.widget.ViewPager2
+          xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:app="http://schemas.android.com/apk/res-auto"
+          xmlns:tools="http://schemas.android.com/tools"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:id="@+id/viewpager"
+          android:layout_weight="1"
+          tools:context=".MainActivity">
+  </androidx.viewpager2.widget.ViewPager2>
+
+  <com.google.android.material.tabs.TabLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:id="@+id/tabs"
+  />
+
+</LinearLayout> 
+```
+* ActivityMain.kt에 ViewPager와 TabLayout 연결
+* layout_weight : TabLayout 먼저 배치하고 남은 공간을 사용하겠다는 뜻 
+```kotlin
+TabLayoutMediator(binding.tabs, binding.viewpager) { // tabs 와 viewpager을 연결하겠다
+            tab, position ->
+                tab.text = "TAB ${position + 1}" // 탭에 쓰여지는 글자를 정할 수 있음
+        }.attach()
+```
+
+## NavigationView
+* 드로어 화면 구성 
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="#FF0000">
+  <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Navigation Title"
+          android:textColor="@color/white"
+          android:textStyle="bold"
+          android:textSize="20dp"
+          android:layout_alignParentBottom="true"
+          android:layout_alignParentLeft="true"
+          android:layout_marginBottom="30dp"
+          android:layout_marginLeft="30dp"/>
+
+</RelativeLayout> 
+```
+* 네비게이션을 위한 헤더 파일 생성해두기 
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:background="#FF0000">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Navigation Title"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="30dp"
+        android:layout_marginLeft="30dp"/>
+
+</RelativeLayout>
+```
+* activity_main.xml 파일에 드로어 헤더 지정해주기 
+  * id 부여하기
+  * headerLayout과 기존 만들었던 헤더 xml 파일 연결하기
+  * menu 연결하기 
+
+```xml
+    <!-- 드로어 화면 -->
+    <com.google.android.material.navigation.NavigationView
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:gravity="center"
+
+        android:fitsSystemWindows="true"
+        android:layout_gravity="start"
+        android:id="@+id/mainDrawerView"
+        app:headerLayout="@layout/navigation_header"
+        app:menu="@menu/menu_navigation"
+        />
+```
+
+* MainActivity의 onCreate 내부에 아래 코드 추가 
+```kotlin
+// 네비게이션 연결
+binding.mainDrawerView.setNavigationItemSelectedListener(this)
+```
+* setNavigationItemSelectedListener를 쓰기 위해서는 상속받는 클래스가 하나 더 추가되어야 함
+  * NavigationView.OnNavigationItemSelectedListener 상속시켜줌 
+
+  * 상속받으면 에러 -> 오버라이드 진행하기 
+```kotlin
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        // 전달받은 아이템의 아이디에 따라 처리하면 된다
+        when(item.itemId) {
+            R.id.item1 -> {
+                Log.d("mobileapp", "Navigation Menu : 메뉴 1")
+                // 함수 밖이므로 binding에 접근할 수 없음 -> 전역 변수로 선언
+                true
+            }
+            R.id.item2 -> {
+                Log.d("mobileapp", "Navigation Menu : 메뉴 2")
+                true
+            }
+            R.id.item3 -> {
+                Log.d("mobileapp", "Navigation Menu : 메뉴 3")
+                true
+            }
+            R.id.item4 -> {
+                Log.d("mobileapp", "Navigation Menu : 메뉴 4")
+                true
+            }
+        }
+        return false // 디폴트 false
+    }
+```
+* 상속받은 함수로 이벤트 클릭 처리를 할 수 있게 됨 -> `onOptionsItemSelected`의 함수와 구현 똑같음 
 
 
 

@@ -18,8 +18,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import com.example.myapplication5.databinding.ActivityMainBinding
 import com.example.myapplication5.databinding.DialogCustomBinding
+import com.google.android.material.navigation.NavigationView
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     lateinit var binding: ActivityMainBinding
     lateinit var toggle: ActionBarDrawerToggle // 토굴 변수 생성 -> OnCreate 함수에서 초기화해야 함
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -188,7 +189,15 @@ class MainActivity : AppCompatActivity() {
                 show()
             }
         }
+
+        // 네비게이션 연결
+        // setNavigationItemSelectedListener를 쓰기 위해서는 상속받는 클래스가 하나 더 추가되어야 함
+        // NavigationView.OnNavigationItemSelectedListener 상속
+        binding.mainDrawerView.setNavigationItemSelectedListener(this)
+
     }
+
+
 
     // Option Menu
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -236,5 +245,29 @@ class MainActivity : AppCompatActivity() {
             R.id.item4 -> {}
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        // 전달받은 아이템의 아이디에 따라 처리하면 된다
+        when(item.itemId) {
+            R.id.item1 -> {
+                Log.d("mobileapp", "Navigation Menu : 메뉴 1")
+                // 함수 밖이므로 binding에 접근할 수 없음 -> 전역 변수로 선언
+                true
+            }
+            R.id.item2 -> {
+                Log.d("mobileapp", "Navigation Menu : 메뉴 2")
+                true
+            }
+            R.id.item3 -> {
+                Log.d("mobileapp", "Navigation Menu : 메뉴 3")
+                true
+            }
+            R.id.item4 -> {
+                Log.d("mobileapp", "Navigation Menu : 메뉴 4")
+                true
+            }
+        }
+        return false // 디폴트 false
     }
 }
