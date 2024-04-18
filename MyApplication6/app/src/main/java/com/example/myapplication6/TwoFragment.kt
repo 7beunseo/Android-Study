@@ -111,7 +111,8 @@ class TwoFragment : Fragment() {
         }
 
         // adapter & view holder
-        binding.recyclerView.adapter = MyAdapter(datas) // 기존에 만든 datas로 recycler view를 만들겠다
+        val adapter = MyAdapter(datas)
+        binding.recyclerView.adapter = adapter // 기존에 만든 datas로 recycler view를 만들겠다
 
         // layoutManager
         val linearLayout = LinearLayoutManager(activity)
@@ -128,6 +129,11 @@ class TwoFragment : Fragment() {
 
         // 선택적
         binding.recyclerView.addItemDecoration(MyItemDecoration(activity as Context))
+
+        binding.mainFab.setOnClickListener{
+            datas.add("Add Item") // 데이터를 변경하기 위해서는 RecyclerView가 참조하고 있는 데이터를 볁경해야 함
+            adapter.notifyDataSetChanged()
+        }
 
         return binding.root
     }
