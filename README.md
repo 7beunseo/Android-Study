@@ -441,6 +441,135 @@ class MainActivity : AppCompatActivity() {
 }
 ```
 
+## RecyclerView
+
+```xml
+<androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#00ff00"
+        android:id="@+id/recyclerView"
+        tools:context=".TwoFragment">
+
+    </androidx.recyclerview.widget.RecyclerView>
+```
+* xml에 RecyclerView 추가
+  * id로 RecyclerView 지정해주기
+
+
+* 코틀린 파일에서 데이터 항목 리스트 생성 
+  * ex ) `mutableListOf<String>` : 데이터가 변경되므로 mutable 
+```kotlin
+// adapter & view holder
+binding.recyclerView.adapter = MyAdapter(datas)
+```
+* xml의 recyclerView에 어뎁터를 연결
+* MyAdapter라는 클래스를 새롭게 생성하고 인자로 어떤 내용이 반복되어 보일 것인지 지정해줌
+
+
+```kotlin
+class MyAdapter(val datas: MutableList<String>): RecyclerView.Adapter<RecyclerView.ViewHolder>() { // adapter를 생성할 때 Recyclerview에 있는 ViewAdapter로 만들겠다 지정해줌
+    // 이 항목은 어떤 레이아웃을 이용할 것인가에 관한 내용 
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder { 
+        // 별도의 클래스 이용
+        return MyViewHolder(ItemRecyclerviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)) // 형식 정해져 있음
+    }
+
+    override fun getItemCount(): Int { // 뷰 홀더에서 담고 있는 아이템의 개수가 몇개인가? - 잔딜빋은 데이터 리스트의 길이 리턴 
+        return datas.size
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) { // holder: MyViewHolder 의미, position: int -> 항목들이 쭉 나열된다
+        // 각각의 항목들에 대해서 어떻게 데이터를 집어넣을 것인가?
+        // 전달받은  datas와 ItemRecyclerviewBinding 화면을 연결해주는 작업
+        val binding = (holder as MyViewHolder).bindding // MyViewHolder로 다운캐스팅 필요 -> binding에는 item_recyclerview가 들어가게 된다 -> 내부 id 변수처럼 사용 가능 
+        binding.itemData.text = datas[position]
+    }
+
+}
+```
+ * RecyclerView가 제공하는 Adapter 클래스를 상속받는 것임 -> () 표시 해주기
+ * adapter를 생성할 때 Recyclerview에 있는 ViewAdapter로 만들겠다 지정해줌
+
+
+### onCreateViewHolder
+* 뷰 홀더와 연결해주는 역할 -> 새로운 클래스를 생성해서 binding 전달해주어야 함 
+* item_recyclerview에 있는 레이아웃을 가지고 와서 Fragment나 Layout에서 binding 변수처럼 사용했던 것을 사용할 수 있다
+```kotlin
+class MyViewHolder(val bindding: ItemRecyclerviewBinding): RecyclerView.ViewHolder(bindding.root)
+```
+
+
+### onBindViewHolder
+* 각각의 항목들에 대해서 어떻게 데이터를 집어넣을 것인가?
+* 전달받은  datas와 ItemRecyclerviewBinding 화면을 연결해주는 작업
+  * MyViewHolder로 다운캐스팅 필요 -> binding에는 item_recyclerview가 들어가게 된다
+  * 지정한 id 값으로 뷰들을 사용할 수 있음 
+
+
+
+### layoutManager
+* 어뎁터 설정까지 완료하면 화면에 출력되기 위한 layoutManager을 설정해주어야 함
+* binding.recyclerView.layoutManager = {생성한 레이아웃}
+
+#### 🎀 LinearLayoutManager
+```kotlin
+val linearLayout = LinearLayoutManager(activity)
+linearLayout.orientation = LinearLayoutManager.HORIZONTAL
+binding.recyclerView.layoutManager = linearLayout
+```
+#### 🎀 GridLayoutManager
+```kotlin
+var gridLayout = GridLayoutManager(activity, 2, GridLayoutManager.VERTICAL, false)
+binding.recyclerView.layoutManager = gridLayout
+```
+* spanCount, orientation, reversLayou 매개변수 지정해주기 
+
+
+## 수정될 수 있는 부분
+* ItemRecyclerviewBinding : xml 파일 이름
+* MyAdapter(val datas: MutableList<String>) : 화면에 표현하고자 하는 데이터
+* onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) : 데이터 넣기
+
+
+
+### Decorator 지정
+```kotlin
+binding.recyclerView.addItemDecoration(MyItemDecoration(activity as Context))
+```
+* MyItemDecoration 클래스 생성해주기
+
+
+```kotlin
+class MyItemDecoration(val context: Context): RecyclerView.ItemDecoration() {
+    override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) { // 그림 -> 항목
+        super.onDraw(c, parent, state)
+        // ImageView를 사용하지 않고 화면에 그림
+        // 코틀린에서 사진을 가져와 화면에 뿌리는 방법
+        c.drawBitmap(BitmapFactory.decodeResource(context.resources, R.drawable.kbo), 0f, 0f, null) // 화면 어디에 배치할 것인가?
+    }
+
+    override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) { // 항목 -> 그림 (항목에 가려짐)
+        super.onDrawOver(c, parent, state)
+        c.drawBitmap(BitmapFactory.decodeResource(context.resources, R.drawable.kbo), 500f, 500f, null)
+    }
+
+    override fun getItemOffsets( // 전체 화면이 아닌 각각의 아이템 화면을 꾸며줌
+        outRect: Rect,
+        view: View,
+        parent: RecyclerView,
+        state: RecyclerView.State // 임포트 rect, view, parent 매개변수로 선택해주어야 함
+    ) {
+        super.getItemOffsets(outRect, view, parent, state)
+        view.setBackgroundColor(Color.parseColor("#ffdddd"))
+    }
+
+}
+```
+
+
+
+
 
 # 시험 대비
 

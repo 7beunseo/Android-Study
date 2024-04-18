@@ -19,9 +19,5 @@
 
     </androidx.recyclerview.widget.RecyclerView>
 
-    <com.google.android.material.floatingactionbutton.ExtendedActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add Item" />
 
 </RelativeLayout>
