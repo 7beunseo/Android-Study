@@ -379,6 +379,7 @@ override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 꼭 2로 임포트해야 함 -->
 <androidx.viewpager2.widget.ViewPager2 xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -487,12 +488,13 @@ class MyAdapter(val datas: MutableList<String>): RecyclerView.Adapter<RecyclerVi
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) { // holder: MyViewHolder 의미, position: int -> 항목들이 쭉 나열된다
         // 각각의 항목들에 대해서 어떻게 데이터를 집어넣을 것인가?
         // 전달받은  datas와 ItemRecyclerviewBinding 화면을 연결해주는 작업
-        val binding = (holder as MyViewHolder).bindding // MyViewHolder로 다운캐스팅 필요 -> binding에는 item_recyclerview가 들어가게 된다 -> 내부 id 변수처럼 사용 가능 
+        val binding = (holder as MyViewHolder).binding // MyViewHolder로 다운캐스팅 필요 -> binding에는 item_recyclerview가 들어가게 된다 -> 내부 id 변수처럼 사용 가능 
         binding.itemData.text = datas[position]
     }
 
 }
 ```
+* Holder 로 다운캐스팅해주어야 함 !!!!
  * RecyclerView가 제공하는 Adapter 클래스를 상속받는 것임 -> () 표시 해주기
  * adapter를 생성할 때 Recyclerview에 있는 ViewAdapter로 만들겠다 지정해줌
 
@@ -503,7 +505,7 @@ class MyAdapter(val datas: MutableList<String>): RecyclerView.Adapter<RecyclerVi
 ```kotlin
 class MyViewHolder(val bindding: ItemRecyclerviewBinding): RecyclerView.ViewHolder(bindding.root)
 ```
-
+* 주의 : 꼭 var을 써주어야 한다! 
 
 ### onBindViewHolder
 * 각각의 항목들에 대해서 어떻게 데이터를 집어넣을 것인가?
@@ -758,7 +760,23 @@ binding.mainDrawerView.setNavigationItemSelectedListener(this)
 * 상속받은 함수로 이벤트 클릭 처리를 할 수 있게 됨 -> `onOptionsItemSelected`의 함수와 구현 똑같음 
 
 
-
+## View
+* AddActivity 추가
+```kotlin
+binding.btnMain.setOnClickListener {
+            val intent = Intent(this, AddActivity::class.java) // AddActivity의 intent를 부름
+            startActivity(intent)
+        }
+```
+* ActivitySecondBinding이 아니라 Activity의 이름을 그대로 적어줌 
+* main에서 add를 부름
+```kotlin
+binding.btnAdd.setOnClickListener {
+  finish() // 종료
+  true
+}
+```
+* app에서 main으로 돌아감 
 
 # 시험 대비
 
