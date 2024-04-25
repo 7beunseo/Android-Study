@@ -778,6 +778,189 @@ binding.btnAdd.setOnClickListener {
 ```
 * app에서 main으로 돌아감 
 
+## Activity 간 데이터 전달
+* MainActivity에서 putExtra를 통해 addActivity에 데이터 전달 
+```kotlin
+binding.mainFab.setOnClickListener {
+            val intent = Intent(this, AddActivity::class.java) // AddActivity의 intent를 부름
+
+            /**
+             * addActivity를 start 하기 전에 데이터 전달
+             */
+            // 오늘 날짜를 가지고 옴
+            val dataFormat = SimpleDateFormat("yyyy-mm-dd") // 년 월 일
+            intent.putExtra("today", dataFormat.format(System.currentTimeMillis())) // putExtra를 통해서 date라는 이름으로 string 형태로 넣어줌
+
+
+            startActivity(intent)
+        }
+```
+* Addactivity는 onCreate 내부에 get{형식}Extra로 데이터를 가져옴 
+```kotlin
+var date = intent.getStringExtra("today") // string 형태로 된 today를 가져오겠다
+binding.date.text = date
+```
+
+### AddActivity에서 MainActivity에 값을 전달하려면?
+* startActivity는 돌아왔을 때 리턴 값이 없다는 뜻 
+* `startActivityForResult(Intent intent, int requestCode` :  전달 받을 값이 있는 인텐트를 호출하는거야! -> 처음 부를 때 표시
+* `ActivityRequestLauncher` : 별도의 클래스를 만들어 사용하기도 함 
+
+### ActivityRequestLauncher
+* 어떤 값을 리턴시키는지 지정
+* 값이 왔을 때 어떻게 처리해줄 것인지 처리해주는 부분 (콜백 - 되돌아왔을 때 처리)
+```kotlin
+// registerForActivityResult : 결과를 전달받는 호출 
+val requestLaunchar: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            // 결과를 돌려받았을 때 처리해주는 부분
+            // 전달된 값을 it이라는 변수로 사용
+            it.data!!.getStringExtra("result")?.let {  // data에 값이 있다면 -> null이 아니면
+                datas?.add(it)
+                adapter.notifyDataSetChanged()
+            }
+        }
+```
+* Activity를 시작하는 코드로 requestLaunchar의 launch 이용 
+```kotlin
+// startActivity(intent)
+requestLaunchar.launch(intent) // launch로 실행함
+```
+* AddActivity의 경우
+```kotlin
+binding.btnSave.setOnClickListener {
+            // 돌아가기 전에 값을 넣음
+            val intent = intent
+            intent.putExtra("result", binding.addEditView.text.toString())
+            // intent 만든 것을 전달
+            setResult(Activity.RESULT_OK, intent) // ok 상태로 전달 -> 자신을 불렀던 곳으로 되돌아간다
+
+            finish() // 종료
+            true
+        }
+```
+* MainActivity 추가 코드 
+```kotlin
+datas = mutableListOf<String>()
+        val adapter = MyAdapter(datas)
+        binding.recyclerView.adapter = adapter // 기존에 만들어둔 adapter와 연결함
+        
+        val layoutManager =  LinearLayoutManager(this)
+        binding.recyclerView.layoutManager = layoutManager
+
+        binding.recyclerView.addItemDecoration(
+            DividerItemDecoration(this, LinearLayoutManager.VERTICAL) // 항목마다 선을 그어줌 
+        )
+```
+
+## Activity간 BACK 버튼
+* android:parentActivityName=".MainActivity"를 추가하여 MainActivity가 부모임을 알림 
+```xml
+<activity
+            android:name=".AddActivity"
+            android:parentActivityName=".MainActivity"
+            android:exported="false" />
+```
+* AddActivity 추가
+```kotlin
+supportActionBar?.setDisplayHomeAsUpEnabled(true) // addActivity의 home 화면에 표시하겠다는 뜻 ㅐ
+```
+* `isLocalVoiceInteractionSupported` Override 진행 
+```kotlin
+    override fun isLocalVoiceInteractionSupported(): Boolean {
+        return super.isLocalVoiceInteractionSupported()
+    }
+```
+
+## Bundle
+* 액티비티를 종료할 때 저장했다가 복원해야 할 데이터가 있을 때 `Bundle`이라는 객체에 담아주면 됨 
+* MainActivity 쪽에
+```kotlin
+override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+        super.onSaveInstanceState(outState, outPersistentState)
+        outState.putStringArrayList("datas", ArrayList(datas))
+    }
+```
+```kotlin
+// Bundle에 값이 있으면 그 값을 가져오겠다
+        // savedInstanceState : onCreate의 매개변수로 받은 bundle 값을 쓰겠다는 뜻
+        datas = savedInstanceState?.let {
+            it.getStringArrayList("datas")?.toMutableList() // bundle의 값을 넣음
+        } ?: let {
+            mutableListOf<String>() // 값이 없을 경우는 mutableList로 넣겠다
+        }
+```
+
+## ContentsProvider
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <!-- "android.widget.SearchView" -->
+
+    <item
+        android:id="@+id/item_info"
+        android:icon="@android:drawable/ic_menu_info_details"
+        android:title="웹사이트 방문하기"/>
+    <item
+        android:id="@+id/item_map"
+        android:icon="@android:drawable/ic_dialog_map"
+        android:title="지도보기"/>
+    <item
+        android:id="@+id/item_gallery"
+        android:icon="@android:drawable/ic_menu_gallery"
+        android:title="갤러리보기"/>
+
+    <item
+        android:id="@+id/item_call"
+        android:icon="@android:drawable/ic_menu_call"
+        android:title="전화걸기"/>
+    <item
+        android:id="@+id/item_mail"
+        android:icon="@android:drawable/ic_dialog_email"
+        android:title="메일 보내기"/>
+</menu>
+```
+* `onNavigationItemSelected` 이용 
+```kotlin
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.item_info -> {
+                Log.d("mobileapp", "Navigation Menu : 메뉴 1")
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("http://m.duksung.ac.kr"))
+                startActivity(intent)
+                true
+            }
+            R.id.item_map -> {
+                Log.d("mobileapp", "Navigation Menu : 메뉴 2")
+                // val intent = Intent(Intent.ACTION_VIEW, Uri.parse("geo:37.566292, 126.9779751"))
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/maps/dir/덕성여대/선바위역/"));
+                startActivity(intent)
+                true
+            }
+            R.id.item_gallery -> {
+                Log.d("mobileapp", "Navigation Menu : 메뉴 3")
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("content://media/internal/images/media"))
+                startActivity(intent)
+                true
+            }
+            R.id.item_call -> {
+                Log.d("mobileapp", "Navigation Menu : 메뉴 4")
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("tel:991"))
+                startActivity(intent)
+                true
+            }
+            R.id.item_mail -> {
+                val intent = Intent(Intent.ACTION_SEND, Uri.parse("mail:kimes0403@gmail.com"))
+                startActivity(intent)
+                true
+            }
+        }
+        return false // 디폴트 false
+    }
+```
+
+
+
 # 시험 대비
 
 ### 메뉴 선택 시 입력 처리

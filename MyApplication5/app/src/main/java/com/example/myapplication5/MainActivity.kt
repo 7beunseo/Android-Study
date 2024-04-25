@@ -4,7 +4,9 @@ import android.app.DatePickerDialog
 import android.app.ProgressDialog.show
 import android.app.TimePickerDialog
 import android.content.DialogInterface
+import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -176,18 +178,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
 
+        val customDialog = AlertDialog.Builder(this).run() {
+            setTitle("알림창 - 사용자 화면")
+            setIcon(android.R.drawable.ic_dialog_alert)
+            setView(dialogBinding.root) // DialogCustomBinding으로 뷰를 내보냄
 
+            setPositiveButton("확인", eventListener3)
+            setNegativeButton("취소", eventListener3)
+            create() // 만들기만 하겠다
+        }
 
         binding.btnAlertCustom.setOnClickListener {
-            AlertDialog.Builder(this).run() {
-                setTitle("알림창 - 사용자 화면")
-                setIcon(android.R.drawable.ic_dialog_alert)
-                setView(dialogBinding.root) // DialogCustomBinding으로 뷰를 내보냄
-
-                setPositiveButton("확인", eventListener3)
-                setNegativeButton("취소", eventListener3)
-                show()
-            }
+            customDialog.show() // setView를 하지 않게 됨
         }
 
         // 네비게이션 연결
@@ -250,21 +252,35 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // 전달받은 아이템의 아이디에 따라 처리하면 된다
         when(item.itemId) {
-            R.id.item1 -> {
+            R.id.item_info -> {
                 Log.d("mobileapp", "Navigation Menu : 메뉴 1")
                 // 함수 밖이므로 binding에 접근할 수 없음 -> 전역 변수로 선언
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("http://m.duksung.ac.kr"))
+                startActivity(intent)
                 true
             }
-            R.id.item2 -> {
+            R.id.item_map -> {
                 Log.d("mobileapp", "Navigation Menu : 메뉴 2")
+                // val intent = Intent(Intent.ACTION_VIEW, Uri.parse("geo:37.566292, 126.9779751"))
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/maps/dir/덕성여대/선바위역/"));
+                startActivity(intent)
                 true
             }
-            R.id.item3 -> {
+            R.id.item_gallery -> {
                 Log.d("mobileapp", "Navigation Menu : 메뉴 3")
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("content://media/internal/images/media"))
+                startActivity(intent)
                 true
             }
-            R.id.item4 -> {
+            R.id.item_call -> {
                 Log.d("mobileapp", "Navigation Menu : 메뉴 4")
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("tel:991"))
+                startActivity(intent)
+                true
+            }
+            R.id.item_mail -> {
+                val intent = Intent(Intent.ACTION_SEND, Uri.parse("mail:kimes0403@gmail.com"))
+                startActivity(intent)
                 true
             }
         }
