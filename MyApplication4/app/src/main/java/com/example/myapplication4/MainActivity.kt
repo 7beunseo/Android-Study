@@ -21,8 +21,11 @@ class MainActivity : AppCompatActivity() {
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
+        /**
+         * chronomter 시작
+         */
         binding.btnStart.setOnClickListener {
+
             binding.chronometer.base = SystemClock.elapsedRealtime() + prevTime
             binding.chronometer.start()
             binding.btnStop.isEnabled = true
@@ -30,6 +33,9 @@ class MainActivity : AppCompatActivity() {
             binding.btnStart.isEnabled = false
         }
 
+        /**
+         * chronometer 멈춤
+         */
         binding.btnStop.setOnClickListener {
             binding.chronometer.stop() // chromoter 중지
             // 언제 stop 버튼을 눌렀는지 확인 필요
@@ -40,6 +46,9 @@ class MainActivity : AppCompatActivity() {
             binding.btnStart.isEnabled = true
         }
 
+        /**
+         * chromometer reset
+         */
         binding.btnReset.setOnClickListener {
             binding.chronometer.stop()
             binding.chronometer.base = SystemClock.elapsedRealtime()
@@ -61,6 +70,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         when(keyCode) {
+            /**
+             * 백 키 눌림
+             * SystemClock.elapsedRealtime() : 현재 시간
+             */
             KeyEvent.KEYCODE_BACK -> {
                 if(SystemClock.elapsedRealtime() - initTime > 3000) {
                     initTime = SystemClock.elapsedRealtime()
@@ -68,6 +81,9 @@ class MainActivity : AppCompatActivity() {
                     return true;
                 }
             }
+            /**
+             * 볼륨 키 눌림
+             */
             KeyEvent.KEYCODE_VOLUME_UP -> {
                 AlertDialog.Builder(this).run {
                     setTitle("볼륨업 버튼 눌림")

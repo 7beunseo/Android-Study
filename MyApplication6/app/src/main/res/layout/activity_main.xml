@@ -24,5 +24,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/tabs"
         />
+    <!-- tabLayout에 tabMOde="scrollable", "fixed" 지정 가능 -->
 
 </LinearLayout>

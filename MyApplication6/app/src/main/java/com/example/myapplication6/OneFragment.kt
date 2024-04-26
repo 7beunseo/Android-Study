@@ -38,17 +38,25 @@ class OneFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        val binding = FragmentOneBinding.inflate(inflater, container, false)
         /**
          * view에서 필요한 동작을 넣어줌
          */
+        // Inflate the layout for this fragment
+        val binding = FragmentOneBinding.inflate(inflater, container, false)
         binding.fragButton.setOnClickListener {
-            // fragment의 배경색을 바꿈
+            /**
+             * setBackgroundColor, Color.parseColor(RGB) - ragment의 배경색을 바꿈
+             */
             binding.oneFragment.setBackgroundColor(Color.parseColor("#ffddff"))
 
+            /**
+             * fragment에서 Toast -> this가 아니라 context로 지정
+             */
             Toast.makeText(context, "OneFragment", Toast.LENGTH_LONG).show() // this -> context로 변경
 
+            /**
+             * context가 존재할 때만 alert 창을 띄우는 코드
+             */
             // androidx.appcompat.app. 경로에 있는 AlertDialog 임포트 시 context 도 에러 -> null 일 경우 처리 필요 -> let으로 묶음
             context?.let { it1 ->
                 AlertDialog.Builder(it1).run() {

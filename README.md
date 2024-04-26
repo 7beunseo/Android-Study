@@ -1,3 +1,8 @@
+# Introduce
+* MyApplication3 : Layout
+* MyApplication4 : Chronometer, OnKeyDown
+
+
 # Index
 * [Chronometer](#Chronometer)
 * [Dialog](#Dialog)
@@ -958,8 +963,7 @@ override fun onSaveInstanceState(outState: Bundle, outPersistentState: Persistab
         return false // 디폴트 false
     }
 ```
-
-
+o
 
 # 시험 대비
 
