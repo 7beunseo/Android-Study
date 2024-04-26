@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <!-- "android.widget.SearchView" -->
+
+    <item
+        android:id="@+id/item_info"
+        android:icon="@android:drawable/ic_menu_info_details"
+        android:title="덕성여자대학교"/>
+    <item
+        android:id="@+id/item_map"
+        android:icon="@android:drawable/ic_dialog_map"
+        android:title="지도 보기"/>
+
+    <item
+        android:id="@+id/item_call"
+        android:icon="@android:drawable/ic_menu_call"
+        android:title="전화 걸기"/>
+
+    <item
+        android:id="@+id/move_activity"
+        android:icon="@android:drawable/gallery_thumb"
+        android:title="move 액티비티 호출하기"/>
+
+</menu>
