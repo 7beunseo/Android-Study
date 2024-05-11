@@ -1,12 +1,17 @@
 package com.example.myapplication9
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication9.databinding.FragmentJsonBinding
 import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -38,14 +43,33 @@ class JsonFragment : Fragment() {
         val binding = FragmentJsonBinding.inflate(inflater, container, false)
 
         val year = arguments?.getString("searchYear") ?: "2024" // argument를 가져오고 값이 없으면 2024
-        val call: Call<JsonResponse> = RetrofitConnection.jsonNetServ.getJsonList(
+        val call: retrofit2.Call<JsonResponse> = RetrofitConnection.jsonNetServ.getJsonList(
             year.toInt(),
             1,
             10,
             "json",
-            "\t\n" +
-                    "APKTrp0XMZTlReSionHVfAbVsgefp6rmsviSNGmE5MndTP43LqhqvSm2n7Qj+2GQ3TpsgbH/KaUWDEMV5ApISg=="
+            "APKTrp0XMZTlReSionHVfAbVsgefp6rmsviSNGmE5MndTP43LqhqvSm2n7Qj+2GQ3TpsgbH/KaUWDEMV5ApISg=="
         )
+
+
+        call?.enqueue(object: Callback<JsonResponse> {
+            override fun onResponse(
+                call: retrofit2.Call<JsonResponse>,
+                response: Response<JsonResponse>
+            ) {
+                Log.d("mobileApp", "$response")
+                Log.d("mobileApp", "${response.body()}")
+                binding.jsonRecyclerView.adapter = JsonAdapter(response.body()?.response!!.body!!.items)
+                binding.jsonRecyclerView.layoutManager = LinearLayoutManager(activity)
+                binding.jsonRecyclerView.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
+            }
+
+            override fun onFailure(call: retrofit2.Call<JsonResponse>, t: Throwable) {
+                Log.d("mobileApp", "onFailure")
+            }
+
+
+        })
 
 
         return binding.root
