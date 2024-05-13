@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication9.databinding.FragmentJsonBinding
-import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 

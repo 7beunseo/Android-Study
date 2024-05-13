@@ -1,11 +1,17 @@
 package com.example.myapplication9
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication9.databinding.FragmentXmlBinding
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -37,6 +43,30 @@ class XmlFragment : Fragment() {
         // Inflate the layout for this fragment
         val binding = FragmentXmlBinding.inflate(inflater, container, false)
 
+        val year = arguments?.getString("searchYear") ?: "2024"
+
+        val call: Call<XmlResponse> = RetrofitConnection.xmlNetworkServ.getXmlList(
+            year.toInt(),
+            1,
+            10,
+            "xml",
+            "APKTrp0XMZTlReSionHVfAbVsgefp6rmsviSNGmE5MndTP43LqhqvSm2n7Qj+2GQ3TpsgbH/KaUWDEMV5ApISg=="
+        )
+
+        call?.enqueue(object: Callback<XmlResponse> {
+            override fun onResponse(call: Call<XmlResponse>, response: Response<XmlResponse>) {
+                Log.d("mobileApp", "$response")
+                Log.d("mobileapp", "${response.body()}")
+                binding.xmlRecyclerView.adapter = XmlAdapter(response.body()?.body!!.items!!.item)
+                binding.xmlRecyclerView.layoutManager = LinearLayoutManager(activity)
+                binding.xmlRecyclerView.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
+            }
+
+            override fun onFailure(call: Call<XmlResponse>, t: Throwable) {
+                Log.d("mobileApp", "onFalure ${call.request()}")
+            }
+
+        })
 
 
         return binding.root
