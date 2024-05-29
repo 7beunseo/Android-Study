@@ -1,8 +1,11 @@
 package com.example.myapplication10
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication10.databinding.ItemHinfoBinding
 
@@ -24,8 +27,27 @@ class PhpAdapter (val context: Context, val itemList: ArrayList<HinfoData>): Rec
         holder.binding.run {
             //
             tvName.text = data.name
-            tvAge.text = data.age.toString()
+            tvAge.text = data.Age.toString()
             tvAddr.text = data.addr
+
+            root.setOnClickListener{
+                Toast.makeText(context, "Root", Toast.LENGTH_LONG).show()
+                Intent(context, HumanActivity::class.java).apply {
+                    putExtra("name", tvName.text)
+                    putExtra("age", tvAge.text)
+                    putExtra("add", tvName.text)
+                }.run {
+                    context.startActivity(this) // adapter 에서 클릭 리스너를 붙이고 액티비티를 호출하고 싶다면 context 넣어주기
+                }
+            }
+
+            tvName.setOnClickListener{
+                Toast.makeText(context, "Name", Toast.LENGTH_LONG).show()
+            }
+            imageView.setOnClickListener {
+                Toast.makeText(context, "Image", Toast.LENGTH_LONG).show()
+
+            }
         }
     }
 }

@@ -18,6 +18,13 @@ interface NetworkService {
     ) : Call<XmlResponse>
 
     // http://localhost/php_connection.php/
-    @GET("php_connection")
-    fun getPhpList() : Call<PhpResponse>
+    // @GET("php_connection.php")
+    /// fun getPhpList() : Call<PhpResponse>
+
+    //http://localhost/php_connection.php?age=32
+    @GET("php_connection.php")
+    fun getPhpList(
+        @Query("age") age: String
+    ): Call<PhpResponse>
+
 }

@@ -20,7 +20,8 @@ class PhpActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.btnPhp.setOnClickListener {
-            val call: Call<PhpResponse> = RetrofitConnection.phpNetworkService.getPhpList()
+            val age = binding.etAge.text.toString() ?: ""
+            val call: Call<PhpResponse> = RetrofitConnection.phpNetworkService.getPhpList(age)
 
             call?.enqueue(object: Callback<PhpResponse> {
                 override fun onResponse(
