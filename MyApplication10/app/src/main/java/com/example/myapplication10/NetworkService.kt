@@ -16,4 +16,8 @@ interface NetworkService {
         @Query("returnType") returnType:String,
         @Query("serviceKey") apiKey:String
     ) : Call<XmlResponse>
+
+    // http://localhost/php_connection.php/
+    @GET("php_connection")
+    fun getPhpList() : Call<PhpResponse>
 }

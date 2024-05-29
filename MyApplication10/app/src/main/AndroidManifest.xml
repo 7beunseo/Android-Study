@@ -5,8 +5,8 @@
     <uses-configuration android:name="android.permission.INTERNET" />
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-    <!-- android:name=".MyApplication" 제일 먼저 실행 -->
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -14,11 +14,25 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication10"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".PhpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PhpRetrofit"
+            android:exported="false" />
+        <activity
+            android:name=".AddActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".BoardActivity"
+            android:exported="false" />
         <activity
             android:name=".AuthActivity"
             android:exported="false" />
