@@ -15,6 +15,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.example.myapplication11.databinding.ActivityMainBinding
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
+import java.util.Random
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +48,24 @@ class MainActivity : AppCompatActivity() {
                 noti()
             }
         } // binding.notificationButton
+
+        // youtube
+        val random = Random()
+        val num = random.nextInt(5)
+
+        lifecycle.addObserver(binding.youtubePlayerView)
+        binding.youtubePlayerView.addYouTubePlayerListener(object: AbstractYouTubePlayerListener(){
+            override fun onReady(youTubePlayer: YouTubePlayer) {
+                super.onReady(youTubePlayer)
+                val videoId: String
+                if(num > 3)
+                    videoId = "WHrANzPs9ww"
+                else
+                        videoId = ""
+
+                youTubePlayer.cueVideo(videoId, 0f)
+            }
+        })
 
     } // override fun onCreate
 
