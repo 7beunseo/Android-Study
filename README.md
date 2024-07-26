@@ -1,8 +1,3 @@
-# Introduce
-* MyApplication3 : Layout
-* MyApplication4 : Chronometer, OnKeyDown
-
-
 # Index
 * [Chronometer](#Chronometer)
 * [Dialog](#Dialog)
@@ -11,7 +6,6 @@
 * [RecyclerView](#RecyclerView)
 * [TabLayout](#TabLayout)
 * [NavigationView](#NavigationView)
-* [Exam](#시험 대비)
 
 # Chronometer
 
